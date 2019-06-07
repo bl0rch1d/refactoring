@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 RSpec.describe Account do
-  OVERRIDABLE_FILENAME = 'spec/fixtures/account.yml'.freeze
+  OVERRIDABLE_FILENAME = 'spec/fixtures/account.yml'
 
   COMMON_PHRASES = {
     create_first_account: "There is no active accounts, do you want to be the first?[y/n]\n",

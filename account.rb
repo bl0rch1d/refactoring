@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'pry'
 
@@ -10,10 +12,10 @@ class Account
   end
 
   def console
-      puts 'Hello, we are RubyG bank!'
-      puts '- If you want to create account - press `create`'
-      puts '- If you want to load account - press `load`'
-      puts '- If you want to exit - press `exit`'
+    puts 'Hello, we are RubyG bank!'
+    puts '- If you want to create account - press `create`'
+    puts '- If you want to load account - press `load`'
+    puts '- If you want to exit - press `exit`'
 
     # FIRST SCENARIO. IMPROVEMENT NEEDED
 
@@ -34,7 +36,8 @@ class Account
       age_input
       login_input
       password_input
-      break unless @errors.length != 0
+      break if @errors.empty?
+
       @errors.each do |e|
         puts e
       end
@@ -44,22 +47,20 @@ class Account
     @card = []
     new_accounts = accounts << self
     @current_account = self
-    File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } #Storing
+    File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } # Storing
     main_menu
   end
 
   def load
     loop do
-      if !accounts.any?
-        return create_the_first_account
-      end
+      return create_the_first_account if accounts.none?
 
       puts 'Enter your login'
       login = gets.chomp
       puts 'Enter your password'
       password = gets.chomp
 
-      if accounts.map { |a| { login: a.login, password: a.password } }.include?({ login: login, password: password })
+      if accounts.map { |a| { login: a.login, password: a.password } }.include?(login: login, password: password)
         a = accounts.select { |a| login == a.login }.first
         @current_account = a
         break
@@ -134,24 +135,24 @@ class Account
         if ct == 'usual'
           card = {
             type: 'usual',
-            number: 16.times.map{rand(10)}.join,
+            number: 16.times.map { rand(10) }.join,
             balance: 50.00
           }
         elsif ct == 'capitalist'
           card = {
             type: 'capitalist',
-            number: 16.times.map{rand(10)}.join,
+            number: 16.times.map { rand(10) }.join,
             balance: 100.00
           }
         elsif ct == 'virtual'
           card = {
             type: 'virtual',
-            number: 16.times.map{rand(10)}.join,
+            number: 16.times.map { rand(10) }.join,
             balance: 150.00
           }
         end
         cards = @current_account.card << card
-        @current_account.card = cards #important!!!
+        @current_account.card = cards # important!!!
         new_accounts = []
         accounts.each do |ac|
           if ac.login == @current_account.login
@@ -160,7 +161,7 @@ class Account
             new_accounts.push(ac)
           end
         end
-        File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } #Storing
+        File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } # Storing
         break
       else
         puts "Wrong card type. Try again!\n"
@@ -179,6 +180,7 @@ class Account
         puts "press `exit` to exit\n"
         answer = gets.chomp
         break if answer == 'exit'
+
         if answer&.to_i.to_i <= @current_account.card.length && answer&.to_i.to_i > 0
           puts "Are you sure you want to delete #{@current_account.card[answer&.to_i.to_i - 1][:number]}?[y/n]"
           a2 = gets.chomp
@@ -192,7 +194,7 @@ class Account
                 new_accounts.push(ac)
               end
             end
-            File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } #Storing
+            File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } # Storing
             break
           else
             return
@@ -219,7 +221,7 @@ class Account
 
   def withdraw_money
     puts 'Choose the card for withdrawing:'
-    answer, a2, a3 = nil #answers for gets.chomp
+    answer, a2, a3 = nil # answers for gets.chomp
     if @current_account.card.any?
       @current_account.card.each_with_index do |c, i|
         puts "- #{c[:number]}, #{c[:type]}, press #{i + 1}"
@@ -228,6 +230,7 @@ class Account
       loop do
         answer = gets.chomp
         break if answer == 'exit'
+
         if answer&.to_i.to_i <= @current_account.card.length && answer&.to_i.to_i > 0
           current_card = @current_account.card[answer&.to_i.to_i - 1]
           loop do
@@ -246,7 +249,7 @@ class Account
                     new_accounts.push(ac)
                   end
                 end
-                File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } #Storing
+                File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } # Storing
                 puts "Money #{a2&.to_i.to_i} withdrawed from #{current_card[:number]}$. Money left: #{current_card[:balance]}$. Tax: #{withdraw_tax(current_card[:type], current_card[:balance], current_card[:number], a2&.to_i.to_i)}$"
                 return
               else
@@ -279,6 +282,7 @@ class Account
       loop do
         answer = gets.chomp
         break if answer == 'exit'
+
         if answer&.to_i.to_i <= @current_account.card.length && answer&.to_i.to_i > 0
           current_card = @current_account.card[answer&.to_i.to_i - 1]
           loop do
@@ -300,7 +304,7 @@ class Account
                     new_accounts.push(ac)
                   end
                 end
-                File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } #Storing
+                File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } # Storing
                 puts "Money #{a2&.to_i.to_i} was put on #{current_card[:number]}. Balance: #{current_card[:balance]}. Tax: #{put_tax(current_card[:type], current_card[:balance], current_card[:number], a2&.to_i.to_i)}"
                 return
               end
@@ -377,16 +381,14 @@ class Account
               recipient = ac
               new_recipient_cards = []
               recipient.card.each do |card|
-                if card[:number] == a2
-                  card[:balance] = recipient_balance
-                end
+                card[:balance] = recipient_balance if card[:number] == a2
                 new_recipient_cards.push(card)
               end
               recipient.card = new_recipient_cards
               new_accounts.push(recipient)
             end
           end
-          File.open('accounts.yml', 'w') { |f| f.write new_accounts.to_yaml } #Storing
+          File.open('accounts.yml', 'w') { |f| f.write new_accounts.to_yaml } # Storing
           puts "Money #{a3&.to_i.to_i}$ was put on #{sender_card[:number]}. Balance: #{recipient_balance}. Tax: #{put_tax(sender_card[:type], sender_card[:balance], sender_card[:number], a3&.to_i.to_i)}$\n"
           puts "Money #{a3&.to_i.to_i}$ was put on #{a2}. Balance: #{sender_balance}. Tax: #{sender_tax(sender_card[:type], sender_card[:balance], sender_card[:number], a3&.to_i.to_i)}$\n"
           break
@@ -408,7 +410,7 @@ class Account
           new_accounts.push(ac)
         end
       end
-      File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } #Storing
+      File.open(@file_path, 'w') { |f| f.write new_accounts.to_yaml } # Storing
     end
   end
 
@@ -425,37 +427,23 @@ class Account
   def login_input
     puts 'Enter your login'
     @login = gets.chomp
-    if @login == ''
-      @errors.push('Login must present')
-    end
+    @errors.push('Login must present') if @login == ''
 
-    if @login.length < 4
-      @errors.push('Login must be longer then 4 symbols')
-    end
+    @errors.push('Login must be longer then 4 symbols') if @login.length < 4
 
-    if @login.length > 20
-      @errors.push('Login must be shorter then 20 symbols')
-    end
+    @errors.push('Login must be shorter then 20 symbols') if @login.length > 20
 
-    if accounts.map { |a| a.login }.include? @login
-      @errors.push('Such account is already exists')
-    end
+    @errors.push('Such account is already exists') if accounts.map(&:login).include? @login
   end
 
   def password_input
     puts 'Enter your password'
     @password = gets.chomp
-    if @password == ''
-      @errors.push('Password must present')
-    end
+    @errors.push('Password must present') if @password == ''
 
-    if @password.length < 6
-      @errors.push('Password must be longer then 6 symbols')
-    end
+    @errors.push('Password must be longer then 6 symbols') if @password.length < 6
 
-    if @password.length > 30
-      @errors.push('Password must be shorter then 30 symbols')
-    end
+    @errors.push('Password must be shorter then 30 symbols') if @password.length > 30
   end
 
   def age_input
@@ -469,14 +457,14 @@ class Account
   end
 
   def accounts
-    if File.exists?('accounts.yml')
+    if File.exist?('accounts.yml')
       YAML.load_file('accounts.yml')
     else
       []
     end
   end
 
-  def withdraw_tax(type, balance, number, amount)
+  def withdraw_tax(type, _balance, _number, amount)
     if type == 'usual'
       return amount * 0.05
     elsif type == 'capitalist'
@@ -484,10 +472,11 @@ class Account
     elsif type == 'virtual'
       return amount * 0.88
     end
+
     0
   end
 
-  def put_tax(type, balance, number, amount)
+  def put_tax(type, _balance, _number, amount)
     if type == 'usual'
       return amount * 0.02
     elsif type == 'capitalist'
@@ -495,10 +484,11 @@ class Account
     elsif type == 'virtual'
       return 1
     end
+
     0
   end
 
-  def sender_tax(type, balance, number, amount)
+  def sender_tax(type, _balance, _number, amount)
     if type == 'usual'
       return 20
     elsif type == 'capitalist'
@@ -506,6 +496,7 @@ class Account
     elsif type == 'virtual'
       return 1
     end
+
     0
   end
 end
