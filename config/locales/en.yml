@@ -1,0 +1,38 @@
+en:
+  CARD_TYPES: "You could create one of 3 card types
+              \n- Usual card. 2% tax on card INCOME. 20$ tax on SENDING money from this card. 5% tax on WITHDRAWING money. For creation this card - press `usual`
+              \n- Capitalist card. 10$ tax on card INCOME. 10% tax on SENDING money from this card. 4$ tax on WITHDRAWING money. For creation this card - press `capitalist`
+              \n- Virtual card. 1$ tax on card INCOME. 1$ tax on SENDING money from this card. 12% tax on WITHDRAWING money. For creation this card - press `virtual`\n"
+
+  EXIT_OPTION: 'For exit - enter <exit>'
+
+  WELCOME: "Hello, we are RubyG bank!"
+  
+  ACCOUNT_OPTIONS: "- If you want to create account - press `create`
+                    \n- If you want to load account - press `load`\n"
+
+  ERRORS:
+    INVALID_OPTION: '[!] Invalid option.'
+
+  NAME_REQUEST: 'Enter your name'
+  LOGIN_REQUEST: 'Enter your login'
+  PASSWORD_REQUEST: 'Enter your password'
+  AGE_REQUEST: 'Enter your age'
+
+  NO_ACCOUNT_ERROR: '[!] There is no account with given credentials!'
+
+  FIRST_ACCOUNT_REQUEST: 'There is no active accounts, do you want to be the first?[y/n]'
+
+  USER_WELCOME: "Welcome, %{name}"
+
+  MAIN_MENU:  "If you want to:
+              \n- show all cards              - press SC
+              \n- create card                 - press CC
+              \n- destroy card                - press DC
+              \n- put money on card           - press PM
+              \n- withdraw money on card      - press WM
+              \n- send money to another card  - press SM
+              \n- destroy account             - press `DA`
+              \n- exit from account           - press `exit`"
+
+  IF_YOU_WANT_TO_DELETE: 'If you want to delete:'
