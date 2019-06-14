@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'account'
-require_relative '../helpers/db'
-require_relative 'ui'
-
 # rubocop:disable Naming/AccessorMethodName
 class AccountBuilder
   include DBHelper
@@ -66,37 +62,37 @@ class AccountBuilder
   private
 
   def validate_name(value)
-    errors[:name] << '[!] Your name must not be empty and starts with first upcase letter' unless value.match?(/\A[A-Z]/)
+    errors[:name] << I18n.t('ACCOUNT.ERRORS.BAD_NAME') unless value.match?(/\A[A-Z]/)
   end
 
   def validate_uniqueness(value)
-    errors[:login] << '[!] Such account is already exists' if accounts.map(&:login).include? value
+    errors[:login] << I18n.t('ACCOUNT.ERRORS.ACCOUNT_EXISTS') if accounts.map(&:login).include? value
   end
 
   def validate_login(value)
-    errors[:login] << '[!] Login must present' if value.empty?
+    errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.EMPTY') if value.empty?
 
-    errors[:login] << '[!] Login must be longer then 4 symbols' if value.length < 4
+    errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.SHORT') if value.length < 4
 
-    errors[:login] << '[!] Login must be shorter then 20 symbols' if value.length > 20
+    errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.LONG') if value.length > 20
   end
 
   def validate_password(value)
-    errors[:password] << '[!] Password must present' if value.empty?
+    errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.EMPTY') if value.empty?
 
-    errors[:password] << '[!] Password must be longer then 6 symbols' if value.length < 6
+    errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.SHORT') if value.length < 6
 
-    errors[:password] << '[!] Password must be shorter then 30 symbols' if value.length > 30
+    errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.LONG') if value.length > 30
   end
 
   def validate_age(value)
     value = value.to_i
 
-    errors[:age] << '[!] Age must be a number' unless value.is_a? Integer
+    errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.NOT_A_NUMBER') unless value.is_a? Integer
 
-    errors[:age] << '[!] Your Age must be greater then 23' unless value >= 23
+    errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.SMALL') unless value >= 23
 
-    errors[:age] << '[!] Your Age must be lower then 90' unless value <= 90
+    errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.BIG') unless value <= 90
   end
 end
 # rubocop:enable Naming/AccessorMethodName

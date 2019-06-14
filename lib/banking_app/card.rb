@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'ui'
-
 class Card
   attr_reader :type, :number
   attr_accessor :balance
@@ -32,7 +30,7 @@ class Card
   class << self
     include UI
 
-    def show_cards_for(account)
+    def show(account)
       return puts "There is no active cards!\n" unless account.cards.any?
 
       account.cards.each { |card| puts "- #{card.number}, #{card.type}" }
@@ -42,26 +40,20 @@ class Card
       account.cards <<= new(TEMPLATES[type])
     end
 
-    # def destroy(account)
-    #   loop do
-    #     break puts "There is no active cards!\n" unless account.cards.any?
+    def destroy(account, card_index)
+      account.cards.delete_at(card_index)
+    end
+  end
 
-    #     show_card_removing_menu(account.cards)
+  class Validator
+    class << self
+      def cards_available?(account)
+        account.cards.any?
+      end
 
-    #     reply = gets.strip
-
-    #     break if reply == 'exit'
-
-    #     return puts "You entered wrong number!\n" unless reply.to_i <= account.cards.length && reply.to_i.positive?
-
-    #     puts "Are you sure you want to delete #{account.cards[reply.to_i - 1].number}?[y/n]"
-
-    #     reply2 = gets.strip.downcase
-
-    #     return if reply2 == 'n'
-
-    #     account.cards.delete_at(reply.to_i - 1) if reply2 == 'y'
-    #   end
-    # end
+      def valid_card_index?(cards_size, card_index)
+        card_index <= cards_size && card_index.positive?
+      end
+    end
   end
 end

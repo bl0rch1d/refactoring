@@ -1,38 +1,53 @@
 en:
-  CARD_TYPES: "You could create one of 3 card types
-              \n- Usual card. 2% tax on card INCOME. 20$ tax on SENDING money from this card. 5% tax on WITHDRAWING money. For creation this card - press `usual`
-              \n- Capitalist card. 10$ tax on card INCOME. 10% tax on SENDING money from this card. 4$ tax on WITHDRAWING money. For creation this card - press `capitalist`
-              \n- Virtual card. 1$ tax on card INCOME. 1$ tax on SENDING money from this card. 12% tax on WITHDRAWING money. For creation this card - press `virtual`\n"
-
-  EXIT_OPTION: 'For exit - enter <exit>'
-
   WELCOME: "Hello, we are RubyG bank!"
-  
-  ACCOUNT_OPTIONS: "- If you want to create account - press `create`
-                    \n- If you want to load account - press `load`\n"
+  EXIT_OPTION: 'For exit - enter <exit>'
+  WRONG_COMMAND: "Wrong command. Try again!\n"
 
-  ERRORS:
-    INVALID_OPTION: '[!] Invalid option.'
+  ACCOUNT:
+    USER_WELCOME: "Welcome, %{name}"
+    FIRST_REQUEST: 'There is no active accounts, do you want to be the first?[y/n]'
+    OPTIONS: "- If you want to create account - press `create`
+              \n- If you want to load account - press `load`\n"
+    NAME_REQUEST: 'Enter your name'
+    LOGIN_REQUEST: 'Enter your login'
+    PASSWORD_REQUEST: 'Enter your password'
+    AGE_REQUEST: 'Enter your age'
+    DESTROY_CONFIRMATION: 'Are you sure you want to destroy account?[y/n]'
+    MENU:  "If you want to:
+            \n- show all cards              - press SC
+            \n- create card                 - press CC
+            \n- destroy card                - press DC
+            \n- put money on card           - press PM
+            \n- withdraw money on card      - press WM
+            \n- send money to another card  - press SM
+            \n- destroy account             - press `DA`
+            \n- exit from account           - press `exit`"
+    ERRORS:
+      INVALID_OPTION: '[!] Invalid option.'
+      NO_ACCOUNT: '[!] There is no account with given credentials!'
+      BAD_NAME: '[!] Your name must not be empty and starts with upcase letter'
+      ACCOUNT_EXISTS: '[!] Such account is already exists'
+      LOGIN:
+        EMPTY: '[!] Login must present'
+        SHORT: '[!] Login must be longer then 4 symbols'
+        LONG: '[!] Login must be shorter then 20 symbols'
+      PASSWORD:
+        EMPTY: '[!] Password must present'
+        SHORT: '[!] Password must be longer then 6 symbols'
+        LONG: '[!] Password must be shorter then 30 symbols'
+      AGE:
+        NOT_A_NUMBER: '[!] Age must be a number'
+        BIG: '[!] Your Age must be lower then 90'
+        SMALL: '[!] Your Age must be greater then 23'
 
-  NAME_REQUEST: 'Enter your name'
-  LOGIN_REQUEST: 'Enter your login'
-  PASSWORD_REQUEST: 'Enter your password'
-  AGE_REQUEST: 'Enter your age'
-
-  NO_ACCOUNT_ERROR: '[!] There is no account with given credentials!'
-
-  FIRST_ACCOUNT_REQUEST: 'There is no active accounts, do you want to be the first?[y/n]'
-
-  USER_WELCOME: "Welcome, %{name}"
-
-  MAIN_MENU:  "If you want to:
-              \n- show all cards              - press SC
-              \n- create card                 - press CC
-              \n- destroy card                - press DC
-              \n- put money on card           - press PM
-              \n- withdraw money on card      - press WM
-              \n- send money to another card  - press SM
-              \n- destroy account             - press `DA`
-              \n- exit from account           - press `exit`"
-
-  IF_YOU_WANT_TO_DELETE: 'If you want to delete:'
+  CARD:
+    IF_YOU_WANT_TO_DELETE: 'If you want to delete:'
+    REMOVING_CONFIRMATION: "Are you sure you want to delete %{card_number}?[y/n]"
+    TYPES: "You could create one of 3 card types
+            \n- Usual card. 2% tax on card INCOME. 20$ tax on SENDING money from this card. 5% tax on WITHDRAWING money. For creation this card - press `usual`
+            \n- Capitalist card. 10$ tax on card INCOME. 10% tax on SENDING money from this card. 4$ tax on WITHDRAWING money. For creation this card - press `capitalist`
+            \n- Virtual card. 1$ tax on card INCOME. 1$ tax on SENDING money from this card. 12% tax on WITHDRAWING money. For creation this card - press `virtual`\n"
+    ERRORS:
+      NO_CARDS_AVAILABLE: "[!] There is no active cards!\n"
+      WRONG_INDEX: "[!] You entered wrong index!\n"
+      WRONG_TYPE: "Wrong card type. Try again!\n"

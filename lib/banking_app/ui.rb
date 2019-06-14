@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module UI
-  USER_INVITE = "\n[~]>> "
+  USER_INVITE = '[~]>> '
 
   def show(*messages, with_invite: false, **payload)
     puts I18n.t(*messages, **payload)
@@ -9,14 +9,14 @@ module UI
     print USER_INVITE if with_invite
   end
 
-  def show_accounts_menu
+  def show_bank_menu
     show :WELCOME
-    show :ACCOUNT_OPTIONS
+    show('ACCOUNT.OPTIONS')
     show :EXIT_OPTION, with_invite: true
   end
 
   def show_card_removing_menu(cards)
-    show :IF_YOU_WANT_TO_DELETE
+    show('CARD.IF_YOU_WANT_TO_DELETE')
 
     cards.each_with_index { |card, i| puts "- #{card.number}, #{card.type}, press #{i + 1}" }
 
@@ -24,7 +24,7 @@ module UI
   end
 
   def show_cards_creation_menu
-    show :CARD_TYPES
+    show('CARD.TYPES')
     show :EXIT_OPTION, with_invite: true
   end
 
@@ -36,13 +36,13 @@ module UI
 
   def warn_abount(error_type)
     case error_type
-    when :wrong_card_type then puts "Wrong card type. Try again!\n"
-    when :wrong_command   then puts "Wrong command. Try again!\n"
+    when :wrong_card_type then show('CARD.ERRORS.WRONG_TYPE')
+    when :wrong_command   then show('WRONG_COMMAND')
     end
   end
 
   def show_main_menu_for(account)
-    show :USER_WELCOME, name: account.name
-    show :MAIN_MENU, with_invite: true
+    show('ACCOUNT.USER_WELCOME', name: account.name)
+    show('ACCOUNT.MENU', with_invite: true)
   end
 end
