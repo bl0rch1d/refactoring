@@ -5,17 +5,17 @@ module AccountCLIHelper
 
   def create_account
     loop do
-      @current_account = AccountBuilder.build do |builder|
+      account = AccountBuilder.build do |builder|
         builder.set_name(input(:name))
         builder.set_age(input(:age))
         builder.set_login_credentials(input(:login), input(:password))
         builder.set_empty_cards_list
       end
 
-      break unless @current_account.nil?
-    end
+      next if account.nil?
 
-    save_account @current_account
+      break Account.add @current_account = account
+    end
   end
 
   def load_account
@@ -63,7 +63,7 @@ module AccountCLIHelper
 
     return true if accounts.map do |account|
       { login: account.login, password: account.password }
-    end.include?(login: login, password: Digest::SHA512.hexdigest(password))
+    end.include?(login: login, password: obtain_hashsum(password))
 
     show('ACCOUNT.ERRORS.NO_ACCOUNT')
   end

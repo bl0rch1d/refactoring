@@ -3,19 +3,11 @@
 module DBHelper
   include ConsoleAppConfig
 
-  def save_account(account)
-    save accounts << account
-  end
-
-  def load_account; end
-
-  def update_data; end
-
-  def wipe_data(path: OVERRIDABLE_FILENAME)
-    File.delete(path)
-  end
-
   private
+
+  def obtain_hashsum(data)
+    Digest::SHA512.hexdigest data
+  end
 
   def save(data, path: ACCOUNTS_PATH)
     File.write(path, YAML.dump(data))

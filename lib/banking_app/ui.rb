@@ -15,16 +15,22 @@ module UI
     show :EXIT_OPTION, with_invite: true
   end
 
-  def show_card_removing_menu(cards)
-    show('CARD.IF_YOU_WANT_TO_DELETE')
+  def show_active_cards(account)
+    show('CARD.AVAILABLE')
 
-    cards.each_with_index { |card, i| puts "- #{card.number}, #{card.type}, press #{i + 1}" }
-
-    show :EXIT_OPTION, with_invite: true
+    account.cards.each_with_index { |card, i| puts "#{card.number}, #{card.type}, # - #{i + 1}" }
   end
 
   def show_cards_creation_menu
     show('CARD.TYPES')
+    show :EXIT_OPTION, with_invite: true
+  end
+
+  def show_card_choosing_menu(account)
+    show('CARD.CHOOSE')
+
+    show_active_cards(account)
+
     show :EXIT_OPTION, with_invite: true
   end
 
@@ -41,7 +47,7 @@ module UI
     end
   end
 
-  def show_main_menu_for(account)
+  def show_account_menu(account)
     show('ACCOUNT.USER_WELCOME', name: account.name)
     show('ACCOUNT.MENU', with_invite: true)
   end

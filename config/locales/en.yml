@@ -4,7 +4,7 @@ en:
   WRONG_COMMAND: "Wrong command. Try again!\n"
 
   ACCOUNT:
-    USER_WELCOME: "Welcome, %{name}"
+    USER_WELCOME: "\nWelcome, %{name}"
     FIRST_REQUEST: 'There is no active accounts, do you want to be the first?[y/n]'
     OPTIONS: "- If you want to create account - press `create`
               \n- If you want to load account - press `load`\n"
@@ -41,7 +41,8 @@ en:
         SMALL: '[!] Your Age must be greater then 23'
 
   CARD:
-    IF_YOU_WANT_TO_DELETE: 'If you want to delete:'
+    AVAILABLE: 'Available cards:'
+    CHOOSE: "\n[ === Choose card === ]"
     REMOVING_CONFIRMATION: "Are you sure you want to delete %{card_number}?[y/n]"
     TYPES: "You could create one of 3 card types
             \n- Usual card. 2% tax on card INCOME. 20$ tax on SENDING money from this card. 5% tax on WITHDRAWING money. For creation this card - press `usual`

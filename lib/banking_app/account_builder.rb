@@ -29,7 +29,7 @@ class AccountBuilder
   end
 
   def set_name(name)
-    validate_name(name)
+    AccountValidator.check_name(name, errors)
 
     return unless errors[:name].empty?
 
@@ -37,7 +37,7 @@ class AccountBuilder
   end
 
   def set_age(age)
-    validate_age(age)
+    AccountValidator.check_age(age, errors)
 
     return unless errors[:age].empty?
 
@@ -45,14 +45,8 @@ class AccountBuilder
   end
 
   def set_login_credentials(login, password)
-    validate_login(login)
-    validate_uniqueness(login)
-    validate_password(password)
-
-    return unless errors[:login].empty? || errors[:password].empty?
-
-    account.login = login
-    account.password = Digest::SHA512.hexdigest password
+    set_login(login)
+    set_password(password)
   end
 
   def set_empty_cards_list
@@ -61,38 +55,21 @@ class AccountBuilder
 
   private
 
-  def validate_name(value)
-    errors[:name] << I18n.t('ACCOUNT.ERRORS.BAD_NAME') unless value.match?(/\A[A-Z]/)
+  def set_login(login)
+    AccountValidator.check_login(login, errors)
+    AccountValidator.check_uniqueness(accounts, login, errors)
+
+    return unless errors[:login].empty?
+
+    account.login = login
   end
 
-  def validate_uniqueness(value)
-    errors[:login] << I18n.t('ACCOUNT.ERRORS.ACCOUNT_EXISTS') if accounts.map(&:login).include? value
-  end
+  def set_password(password)
+    AccountValidator.check_password(password, errors)
 
-  def validate_login(value)
-    errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.EMPTY') if value.empty?
+    return unless errors[:password].empty?
 
-    errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.SHORT') if value.length < 4
-
-    errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.LONG') if value.length > 20
-  end
-
-  def validate_password(value)
-    errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.EMPTY') if value.empty?
-
-    errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.SHORT') if value.length < 6
-
-    errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.LONG') if value.length > 30
-  end
-
-  def validate_age(value)
-    value = value.to_i
-
-    errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.NOT_A_NUMBER') unless value.is_a? Integer
-
-    errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.SMALL') unless value >= 23
-
-    errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.BIG') unless value <= 90
+    account.password = obtain_hashsum password
   end
 end
 # rubocop:enable Naming/AccessorMethodName
