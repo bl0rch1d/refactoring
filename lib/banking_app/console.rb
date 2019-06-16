@@ -23,7 +23,7 @@ class Console
     else return show('ACCOUNT.ERRORS.INVALID_OPTION')
     end
 
-    set_operator
+    initialize_operator
     account_menu
   end
 
@@ -33,13 +33,13 @@ class Console
       show_account_menu(@current_account)
 
       case gets.strip
-      when COMMANDS[:show_cards] then show_cards
-      when COMMANDS[:create_card] then create_card
-      when COMMANDS[:destroy_card] then destroy_card
-      when COMMANDS[:put_money] then put_money
-      when COMMANDS[:withdraw_money] then withdraw_money
+      when COMMANDS[:show_cards]      then show_cards
+      when COMMANDS[:create_card]     then create_card
+      when COMMANDS[:destroy_card]    then destroy_card
+      when COMMANDS[:put_money]       then put_money
+      when COMMANDS[:withdraw_money]  then withdraw_money
       when COMMANDS[:destroy_account] then return destroy_account
-      when COMMANDS[:exit] then exit
+      when COMMANDS[:exit]            then exit
       else warn_abount :wrong_command
       end
     end
@@ -48,17 +48,11 @@ class Console
 
   private
 
-  def set_operator
+  def initialize_operator
     @operator = Operator.new(@current_account)
   end
 
   def confirmed?
     gets.strip.downcase == COMMANDS[:yes]
-  end
-
-  def input(credential)
-    show :"ACCOUNT.#{credential.upcase}_REQUEST"
-
-    gets.strip
   end
 end

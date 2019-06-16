@@ -3,99 +3,50 @@
 RSpec.describe Account do
   OVERRIDABLE_FILENAME = 'spec/fixtures/accounts.yml'
 
-  COMMON_PHRASES = {
-    create_first_account: "There is no active accounts, do you want to be the first?[y/n]\n",
-    destroy_account: 'Are you sure you want to destroy account?[y/n]',
-    if_you_want_to_delete: 'If you want to delete:',
-    choose_card: 'Choose the card for putting:',
-    choose_card_withdrawing: 'Choose the card for withdrawing:',
-    input_amount: 'Input the amount of money you want to put on your card',
-    withdraw_amount: 'Input the amount of money you want to withdraw'
-  }.freeze
-
-  HELLO_PHRASES = [
-    'Hello, we are RubyG bank!',
-    '- If you want to create account - press `create`',
-    '- If you want to load account - press `load`',
-    '- If you want to exit - press `exit`'
-  ].freeze
-
   ASK_PHRASES = {
-    name: 'Enter your name',
-    login: 'Enter your login',
-    password: 'Enter your password',
-    age: 'Enter your age'
+    name: I18n.t('ACCOUNT.NAME_REQUEST'),
+    age: I18n.t('ACCOUNT.AGE_REQUEST'),
+    login: I18n.t('ACCOUNT.LOGIN_REQUEST'),
+    password: I18n.t('ACCOUNT.PASSWORD_REQUEST')
   }.freeze
-
-  # CREATE_CARD_PHRASES = [
-  #   'You could create one of 3 card types',
-  #   '- Usual card. 2% tax on card INCOME. 20$ tax on SENDING money from this card. 5% tax on WITHDRAWING money. For creation this card - press `usual`',
-  #   '- Capitalist card. 10$ tax on card INCOME. 10% tax on SENDING money from this card. 4$ tax on WITHDRAWING money. For creation this card - press `capitalist`',
-  #   '- Virtual card. 1$ tax on card INCOME. 1$ tax on SENDING money from this card. 12% tax on WITHDRAWING money. For creation this card - press `virtual`',
-  #   '- For exit - press `exit`'
-  # ].freeze
 
   ACCOUNT_VALIDATION_PHRASES = {
     name: {
-      first_letter: 'Your name must not be empty and starts with upcase letter'
+      first_letter: I18n.t('ACCOUNT.ERRORS.BAD_NAME')
     },
     login: {
-      present: 'Login must present',
-      longer: 'Login must be longer then 4 symbols',
-      shorter: 'Login must be shorter then 20 symbols',
-      exists: 'Such account is already exists'
+      present: I18n.t('ACCOUNT.ERRORS.LOGIN.EMPTY'),
+      longer: I18n.t('ACCOUNT.ERRORS.LOGIN.SHORT'),
+      shorter: I18n.t('ACCOUNT.ERRORS.LOGIN.LONG'),
+      exists: I18n.t('ACCOUNT.ERRORS.ACCOUNT_EXISTS')
     },
     password: {
-      present: 'Password must present',
-      longer: 'Password must be longer then 6 symbols',
-      shorter: 'Password must be shorter then 30 symbols'
+      present: I18n.t('ACCOUNT.ERRORS.PASSWORD.EMPTY'),
+      longer: I18n.t('ACCOUNT.ERRORS.PASSWORD.SHORT'),
+      shorter: I18n.t('ACCOUNT.ERRORS.PASSWORD.LONG')
     },
     age: {
-      greater: 'Your Age must be greater then 23',
-      number: 'Age must be a number',
-      lower: 'Your Age must be lower then 90'
+      greater: I18n.t('ACCOUNT.ERRORS.AGE.SMALL'),
+      number: I18n.t('ACCOUNT.ERRORS.AGE.NOT_A_NUMBER'),
+      lower: I18n.t('ACCOUNT.ERRORS.AGE.BIG')
     }
   }.freeze
 
   ERROR_PHRASES = {
-    user_not_exists: 'There is no account with given credentials',
-    wrong_command: 'Wrong command. Try again!',
-    no_active_cards: "[!] There is no active cards!\n",
-    wrong_card_type: "Wrong card type. Try again!\n",
-    wrong_number: "[!] You entered wrong index!\n",
-    correct_amount: 'You must input correct amount of money',
-    tax_higher: 'Your tax is higher than input amount'
+    user_not_exists: I18n.t('ACCOUNT.ERRORS.NO_ACCOUNT'),
+    wrong_command: I18n.t('WRONG_COMMAND'),
+    no_active_cards: I18n.t('CARD.ERRORS.NO_CARDS_AVAILABLE'),
+    wrong_card_type: I18n.t('CARD.ERRORS.WRONG_TYPE'),
+    wrong_number: I18n.t('CARD.ERRORS.WRONG_INDEX'),
+    correct_amount: I18n.t('OPERATOR.ERRORS.NOT_ENOUGH_MONEY'),
+    tax_higher: I18n.t('OPERATOR.ERRORS.HIGH_TAX')
   }.freeze
 
-  # MAIN_OPERATIONS_TEXTS = [
-  #   'If you want to:',
-  #   '- show all cards - press SC',
-  #   '- create card - press CC',
-  #   '- destroy card - press DC',
-  #   '- put money on card - press PM',
-  #   '- withdraw money on card - press WM',
-  #   '- send money to another card  - press SM',
-  #   '- destroy account - press `DA`',
-  #   '- exit from account - press `exit`'
-  # ].freeze
+  CARDS = Card::TEMPLATES
 
-  CARDS = {
-    usual: {
-      type: 'usual',
-      balance: 50.00
-    },
-    capitalist: {
-      type: 'capitalist',
-      balance: 100.00
-    },
-    virtual: {
-      type: 'virtual',
-      balance: 150.00
-    }
-  }.freeze
-
-  # let(:current_subject) { described_class.new }
   let(:console) { Console.new }
+  let(:garbage) { (0...8).map { rand(65..90).chr }.join }
+  let(:app_commands) { ConsoleAppConfig::COMMANDS }
 
   before do
     allow(STDOUT).to receive(:print).with(UI::USER_INVITE)
@@ -113,19 +64,19 @@ RSpec.describe Account do
       end
 
       it 'create account if input is create' do
-        allow(console).to receive_message_chain(:gets, :strip, :downcase) { 'create' }
+        allow(console).to receive_message_chain(:gets, :strip, :downcase) { app_commands[:create] }
 
         expect(console).to receive(:create_account)
       end
 
       it 'load account if input is load' do
-        allow(console).to receive_message_chain(:gets, :strip, :downcase) { 'load' }
+        allow(console).to receive_message_chain(:gets, :strip, :downcase) { app_commands[:load] }
 
         expect(console).to receive(:load_account)
       end
 
       it 'leave app if input is exit' do
-        allow(console).to receive_message_chain(:gets, :strip, :downcase) { 'exit' }
+        allow(console).to receive_message_chain(:gets, :strip, :downcase) { app_commands[:exit] }
 
         expect(console).to receive(:exit)
       end
@@ -134,7 +85,7 @@ RSpec.describe Account do
         allow(console).to receive(:exit)
         allow(STDOUT).to receive(:puts).with(anything)
 
-        allow(console).to receive_message_chain(:gets, :strip, :downcase) { 'asdda' }
+        allow(console).to receive_message_chain(:gets, :strip, :downcase) { garbage }
 
         expect(STDOUT).to receive(:puts).with(I18n.t('ACCOUNT.ERRORS.INVALID_OPTION'))
       end
@@ -142,7 +93,7 @@ RSpec.describe Account do
 
     context 'with correct output' do
       it do
-        allow(console).to receive_message_chain(:gets, :strip, :downcase) { 'exit' }
+        allow(console).to receive_message_chain(:gets, :strip, :downcase) { app_commands[:exit] }
         allow(console).to receive(:exit)
         allow(console).to receive(:account_menu)
 
@@ -218,7 +169,7 @@ RSpec.describe Account do
       context 'with name errors' do
         context 'without small letter' do
           let(:error_input) { 'some_test_name' }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:name][:first_letter] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:name][:first_letter][3..-1] }
           let(:current_inputs) { [error_input, success_age_input, success_login_input, success_password_input] }
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
@@ -230,34 +181,37 @@ RSpec.describe Account do
 
         context 'when present' do
           let(:error_input) { '' }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:present] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:present][3..-1] }
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
         end
 
         context 'when longer' do
           let(:error_input) { 'E' * 3 }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:longer] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:longer][3..-1] }
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
         end
 
         context 'when shorter' do
           let(:error_input) { 'E' * 21 }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:shorter] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:shorter][3..-1] }
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
         end
 
         context 'when exists' do
           let(:error_input) { 'Denis1345' }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:exists] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:exists][3..-1] }
 
           before do
             # THINK ABOUT IT!!!!
+
+            # rubocop:disable RSpec/AnyInstance
             allow_any_instance_of(AccountBuilder).to receive(:accounts) do
               [instance_double('Account', login: error_input)]
             end
+            # rubocop:enable RSpec/AnyInstance
           end
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
@@ -266,8 +220,8 @@ RSpec.describe Account do
 
       context 'with age errors' do
         let(:current_inputs) { [success_name_input, error_input, success_login_input, success_password_input] }
-        let(:error_lower) { ACCOUNT_VALIDATION_PHRASES[:age][:lower] }
-        let(:error_greater) { ACCOUNT_VALIDATION_PHRASES[:age][:greater] }
+        let(:error_lower) { ACCOUNT_VALIDATION_PHRASES[:age][:lower][3..-1] }
+        let(:error_greater) { ACCOUNT_VALIDATION_PHRASES[:age][:greater][3..-1] }
 
         context 'with length minimum' do
           let(:error_input) { '22' }
@@ -287,21 +241,21 @@ RSpec.describe Account do
 
         context 'when absent' do
           let(:error_input) { '' }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:password][:present] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:password][:present][3..-1] }
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
         end
 
         context 'when longer' do
           let(:error_input) { 'E' * 5 }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:password][:longer] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:password][:longer][3..-1] }
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
         end
 
         context 'when shorter' do
           let(:error_input) { 'E' * 31 }
-          let(:error) { ACCOUNT_VALIDATION_PHRASES[:password][:shorter] }
+          let(:error) { ACCOUNT_VALIDATION_PHRASES[:password][:shorter][3..-1] }
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
         end
@@ -354,7 +308,7 @@ RSpec.describe Account do
         let(:all_inputs) { ['test', 'test', login, password] }
 
         it do
-          expect { console.load_account }.to output(/#{ERROR_PHRASES[:user_not_exists]}/).to_stdout
+          expect { console.load_account }.to output(/#{ERROR_PHRASES[:user_not_exists][3..-1]}/).to_stdout
         end
       end
     end
@@ -368,7 +322,9 @@ RSpec.describe Account do
       expect(console).to receive_message_chain(:gets, :strip, :downcase) {}
       expect(console).to receive(:run)
 
-      expect { console.create_the_first_account }.to output { show(:FIRST_ACCOUNT_REQUEST, with_invite: true) }.to_stdout
+      expect { console.create_the_first_account }.to output {
+        show(:FIRST_ACCOUNT_REQUEST, with_invite: true)
+      }.to_stdout
     end
 
     it 'calls create if user inputs is y' do
@@ -408,7 +364,9 @@ RSpec.describe Account do
       it do
         allow(console).to receive(:show_cards)
         allow(console).to receive(:exit)
-        allow(console).to receive_message_chain(:gets, :strip).and_return('SC', 'exit')
+        allow(console).to receive_message_chain(:gets, :strip).and_return(
+          app_commands[:show_cards], app_commands[:exit]
+        )
 
         console.instance_variable_set(:@current_account, instance_double('Account', name: name))
 
@@ -420,16 +378,17 @@ RSpec.describe Account do
     end
 
     context 'when commands used' do
-      let(:undefined_command) { 'undefined' }
-
       it 'calls specific methods on predefined commands' do
         console.instance_variable_set(:@current_account, instance_double('Account', name: name))
 
-        allow(console).to receive_message_chain(:gets, :strip).and_return('SC', 'exit')
+        allow(console).to receive_message_chain(:gets, :strip).and_return(
+          app_commands[:show_cards], app_commands[:exit]
+        )
+
         allow(console).to receive(:exit)
 
         commands.each do |command, method|
-          allow(console).to receive_message_chain(:gets, :strip).and_return(command, 'exit')
+          allow(console).to receive_message_chain(:gets, :strip).and_return(command, app_commands[:exit])
 
           expect(console).to receive(method)
 
@@ -438,11 +397,11 @@ RSpec.describe Account do
       end
 
       it 'outputs incorrect message on undefined command' do
-        allow(console).to receive_message_chain(:gets, :strip).and_return(undefined_command, 'exit')
+        allow(console).to receive_message_chain(:gets, :strip).and_return(garbage, app_commands[:exit])
 
         console.instance_variable_set(:@current_account, instance_double('Account', name: name))
 
-        expect { console.account_menu }.to output(/#{ERROR_PHRASES[:wrong_command]}/).to_stdout
+        expect { console.account_menu }.to output(/#{ERROR_PHRASES[:wrong_command][3..-1]}/).to_stdout
       end
     end
   end
@@ -464,7 +423,7 @@ RSpec.describe Account do
 
     it 'with correct output' do
       expect(console).to receive_message_chain(:gets, :strip) { '' }
-      expect(STDOUT).to receive(:puts).with(COMMON_PHRASES[:destroy_account])
+      expect(STDOUT).to receive(:puts).with(I18n.t('ACCOUNT.DESTROY_CONFIRMATION'))
 
       console.destroy_account
     end
@@ -547,7 +506,7 @@ RSpec.describe Account do
         expect(STDOUT).to receive(:puts).with(I18n.t('CARD.TYPES'))
         expect(STDOUT).to receive(:puts).with(I18n.t(:EXIT_OPTION))
 
-        expect(console).to receive_message_chain(:gets, :strip).and_return('usual')
+        expect(console).to receive_message_chain(:gets, :strip).and_return(CARDS.keys[0].to_s)
 
         console.create_card
       end
@@ -589,7 +548,7 @@ RSpec.describe Account do
 
         allow(File).to receive(:open)
         allow(described_class).to receive(:accounts).and_return([])
-        allow(console).to receive_message_chain(:gets, :strip).and_return('test', 'usual')
+        allow(console).to receive_message_chain(:gets, :strip).and_return(garbage, CARDS.keys[0].to_s)
 
         expect { console.create_card }.to output(/#{ERROR_PHRASES[:wrong_card_type]}/).to_stdout
       end
@@ -630,7 +589,7 @@ RSpec.describe Account do
           allow(fake_account).to receive(:cards) { fake_cards }
           console.instance_variable_set(:@current_account, fake_account)
 
-          allow(console).to receive_message_chain(:gets, :strip) { 'exit' }
+          allow(console).to receive_message_chain(:gets, :strip) { app_commands[:exit] }
 
           expect(STDOUT).to receive(:puts).with(I18n.t('CARD.CHOOSE'))
           expect(STDOUT).to receive(:puts).with(I18n.t('CARD.AVAILABLE'))
@@ -649,7 +608,7 @@ RSpec.describe Account do
           allow(fake_account).to receive(:cards) { fake_cards }
           console.instance_variable_set(:@current_account, fake_account)
 
-          expect(console).to receive_message_chain(:gets, :strip) { 'exit' }
+          expect(console).to receive_message_chain(:gets, :strip) { app_commands[:exit] }
         end
       end
 
@@ -661,21 +620,19 @@ RSpec.describe Account do
         end
 
         it do
-          allow(console).to receive_message_chain(:gets, :strip).and_return(fake_cards.length + 1, 'exit')
+          allow(console).to receive_message_chain(:gets, :strip).and_return(fake_cards.length + 1, app_commands[:exit])
 
           expect { console.destroy_card }.to output((ERROR_PHRASES[:wrong_number]).to_s).to_stdout
         end
 
         it do
-          allow(console).to receive_message_chain(:gets, :strip).and_return(-1, 'exit')
+          allow(console).to receive_message_chain(:gets, :strip).and_return(-1, app_commands[:exit])
 
           expect { console.destroy_card }.to output((ERROR_PHRASES[:wrong_number]).to_s).to_stdout
         end
       end
 
       context 'with correct input of card number' do
-        let(:accept_for_deleting) { 'y' }
-        let(:reject_for_deleting) { 'asdf' }
         let(:deletable_card_number) { 1 }
 
         before do
@@ -692,7 +649,7 @@ RSpec.describe Account do
         end
 
         it 'accept deleting' do
-          commands = [deletable_card_number, accept_for_deleting]
+          commands = [deletable_card_number, app_commands[:yes]]
           allow(console).to receive_message_chain(:gets, :strip).and_return(*commands)
 
           expect { console.destroy_card }.to change { fake_account.cards.size }.by(-1)
@@ -705,7 +662,7 @@ RSpec.describe Account do
         end
 
         it 'decline deleting' do
-          commands = [deletable_card_number, reject_for_deleting]
+          commands = [deletable_card_number, garbage]
           allow(console).to receive_message_chain(:gets, :strip).and_return(*commands)
 
           expect { console.destroy_card }.not_to change(fake_account.cards, :size)
@@ -745,7 +702,7 @@ RSpec.describe Account do
 
           console.instance_variable_set(:@current_account, fake_account)
 
-          allow(console).to receive_message_chain(:gets, :strip) { 'exit' }
+          allow(console).to receive_message_chain(:gets, :strip) { app_commands[:exit] }
 
           expect { console.put_money }.to output(/#{I18n.t('CARD.CHOOSE')[3..-3]}/).to_stdout
 
@@ -765,7 +722,7 @@ RSpec.describe Account do
 
           console.instance_variable_set(:@current_account, fake_account)
 
-          expect(console).to receive_message_chain(:gets, :strip) { 'exit' }
+          expect(console).to receive_message_chain(:gets, :strip) { app_commands[:exit] }
 
           console.put_money
         end
@@ -779,13 +736,13 @@ RSpec.describe Account do
         end
 
         it do
-          allow(console).to receive_message_chain(:gets, :strip).and_return(fake_cards.length + 1, 'exit')
+          allow(console).to receive_message_chain(:gets, :strip).and_return(fake_cards.length + 1, app_commands[:exit])
 
           expect { console.put_money }.to output(/#{I18n.t('CARD.ERRORS.WRONG_INDEX')[4..-1]}/).to_stdout
         end
 
         it do
-          allow(console).to receive_message_chain(:gets, :strip).and_return(-1, 'exit')
+          allow(console).to receive_message_chain(:gets, :strip).and_return(-1, app_commands[:exit])
 
           expect { console.put_money }.to output(/#{I18n.t('CARD.ERRORS.WRONG_INDEX')[4..-1]}/).to_stdout
         end
@@ -810,7 +767,7 @@ RSpec.describe Account do
         end
 
         context 'with correct output' do
-          let(:commands) { [chosen_card_number, incorrect_money_amount, ConsoleAppConfig::COMMANDS[:exit]] }
+          let(:commands) { [chosen_card_number, incorrect_money_amount, app_commands[:exit]] }
 
           it do
             expect { console.put_money }.to output(/Input the amount of money you want to put/).to_stdout
@@ -825,6 +782,7 @@ RSpec.describe Account do
           end
         end
 
+        # rubocop:disable RSpec/NestedGroups
         context 'with amount greater then 0' do
           context 'with tax greater than amount' do
             let(:commands) { [chosen_card_number, correct_money_amount_lower_than_tax] }
@@ -844,8 +802,13 @@ RSpec.describe Account do
             end
 
             let(:taxes) { [(correct_money_amount_greater_than_tax.to_i * 0.02), 10, 1] }
-
             let(:commands) { [chosen_card_number, correct_money_amount_greater_than_tax] }
+
+            before do
+              allow(described_class).to receive(:accounts) { [fake_account] }
+
+              stub_const('ConsoleAppConfig::ACCOUNTS_PATH', OVERRIDABLE_FILENAME)
+            end
 
             after do
               File.delete(OVERRIDABLE_FILENAME) if File.exist?(OVERRIDABLE_FILENAME)
@@ -854,23 +817,22 @@ RSpec.describe Account do
             it do
               custom_cards.each_with_index do |custom_card, index|
                 allow(console).to receive(:gets).and_return(*commands)
-                allow(described_class).to receive(:accounts) { [fake_account] }
-
-                stub_const('ConsoleAppConfig::ACCOUNTS_PATH', OVERRIDABLE_FILENAME)
                 fake_account.instance_variable_set(:@cards, [custom_card, card_one, card_two])
 
                 new_balance = default_balance + (correct_money_amount_greater_than_tax.to_i - taxes[index])
 
+                # rubocop:disable Metrics/LineLength
                 expect { console.put_money }.to output(
                   /#{correct_money_amount_greater_than_tax}\$ was put on #{custom_card.number}. Balance: #{new_balance}\$. Tax: #{taxes[index]}\$/
                 ).to_stdout
+                # rubocop:enable Metrics/LineLength
 
                 expect(File.exist?(OVERRIDABLE_FILENAME)).to be true
-                file_accounts = YAML.load_file(OVERRIDABLE_FILENAME)
-                expect(file_accounts.first.cards.first.balance).to eq(new_balance)
+                expect(YAML.load_file(OVERRIDABLE_FILENAME).first.cards.first.balance).to eq(new_balance)
               end
             end
           end
+          # rubocop:enable RSpec/NestedGroups
         end
       end
     end
@@ -907,7 +869,7 @@ RSpec.describe Account do
 
           console.instance_variable_set(:@current_account, fake_account)
 
-          allow(console).to receive_message_chain(:gets, :strip) { 'exit' }
+          allow(console).to receive_message_chain(:gets, :strip) { app_commands[:exit] }
 
           fake_cards.each_with_index do |card, index|
             message = /#{card.number}, #{card.type}, # - #{index + 1}/
@@ -923,7 +885,7 @@ RSpec.describe Account do
 
           console.instance_variable_set(:@current_account, fake_account)
 
-          expect(console).to receive_message_chain(:gets, :strip) { 'exit' }
+          expect(console).to receive_message_chain(:gets, :strip) { app_commands[:exit] }
 
           console.withdraw_money
         end
@@ -941,7 +903,7 @@ RSpec.describe Account do
         end
 
         it do
-          allow(console).to receive_message_chain(:gets, :strip).and_return(fake_cards.length + 1, 'exit')
+          allow(console).to receive_message_chain(:gets, :strip).and_return(fake_cards.length + 1, app_commands[:exit])
 
           expect { console.withdraw_money }.to output(/#{I18n.t('CARD.ERRORS.WRONG_INDEX')[4..-1]}/).to_stdout
         end
@@ -966,7 +928,7 @@ RSpec.describe Account do
           allow(console).to receive(:gets).and_return(
             chosen_card_number,
             default_balance,
-            ConsoleAppConfig::COMMANDS[:exit]
+            app_commands[:exit]
           )
         end
 

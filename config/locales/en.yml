@@ -1,7 +1,7 @@
 en:
   WELCOME: "Hello, we are RubyG bank!"
   EXIT_OPTION: 'For exit - enter <exit>'
-  WRONG_COMMAND: "Wrong command. Try again!\n"
+  WRONG_COMMAND: "[!] Wrong command. Try again!\n"
 
   ACCOUNT:
     USER_WELCOME: "\nWelcome, %{name}"
@@ -52,3 +52,12 @@ en:
       NO_CARDS_AVAILABLE: "[!] There is no active cards!\n"
       WRONG_INDEX: "[!] You entered wrong index!\n"
       WRONG_TYPE: "Wrong card type. Try again!\n"
+
+  OPERATOR:
+    AMOUNT_REQUEST: "Input the amount of money you want to %{operation}"
+    WITHDRAW:  "\n%{amount}$ withdrawed from %{card_number}. Money left: %{card_balance}$. Tax: %{tax}$"
+    PUT:  "\n%{amount}$ was put on %{card_number}. Balance: %{card_balance}$. Tax: %{tax}$"
+    ERRORS:
+      NOT_ENOUGH_MONEY: "[!] You don't have enough money on card for such operation"
+      HIGH_TAX: '[!] Your tax is higher than input amount'
+      INCORRECT_AMOUNT: '[!] You must input correct amount of $'

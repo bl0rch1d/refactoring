@@ -13,11 +13,11 @@ module CardCLIHelper
     loop do
       show_cards_creation_menu
 
-      type = gets.strip
+      card_type = gets.strip
 
-      return if type == COMMANDS[:exit]
+      return if card_type == COMMANDS[:exit]
 
-      break Card.add(account: @current_account, type: type.intern) if Card::TEMPLATES.include? type.intern
+      break Card.add(account: @current_account, type: card_type.intern) if Card::TEMPLATES.include? card_type.intern
 
       warn_abount :wrong_card_type
     end
@@ -26,21 +26,21 @@ module CardCLIHelper
   end
 
   def destroy_card
-    loop do
-      break show('CARD.ERRORS.NO_CARDS_AVAILABLE') unless CardValidator.cards_available?(@current_account)
+    return show('CARD.ERRORS.NO_CARDS_AVAILABLE') unless CardValidator.cards_available?(@current_account)
 
-      choosen_card = convert_to_index choose_card
+    choosen_card = convert_to_index choose_card
 
-      return if choosen_card.negative?
+    return if choosen_card.negative?
 
-      show('CARD.REMOVING_CONFIRMATION',
-           card_number: @current_account.cards[choosen_card].number,
-           with_invite: true)
+    show('CARD.REMOVING_CONFIRMATION',
+         card_number: @current_account.cards[choosen_card].number,
+         with_invite: true)
 
-      Card.destroy(@current_account, choosen_card) if confirmed?
+    return unless confirmed?
 
-      return Account.update(@current_account)
-    end
+    Card.destroy(@current_account, choosen_card)
+
+    Account.update(@current_account)
   end
 
   private

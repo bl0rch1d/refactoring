@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ConsoleAppConfig
-  ACCOUNTS_PATH = 'accounts.yml'
+  ACCOUNTS_PATH = 'db/accounts.yml'
 
   COMMANDS = {
     create: 'create',

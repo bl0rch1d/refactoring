@@ -19,9 +19,9 @@ module AccountCLIHelper
   end
 
   def load_account
-    loop do
-      return create_the_first_account if accounts.none?
+    return create_the_first_account if accounts.none?
 
+    loop do
       credentials = obtain_account_credentials
 
       break setup_account(credentials[0]) if account_exists?(credentials)
@@ -43,6 +43,12 @@ module AccountCLIHelper
   end
 
   private
+
+  def input(credential)
+    show :"ACCOUNT.#{credential.upcase}_REQUEST"
+
+    gets.strip
+  end
 
   def obtain_account_credentials
     show('ACCOUNT.LOGIN_REQUEST')
