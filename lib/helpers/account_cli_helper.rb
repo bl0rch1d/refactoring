@@ -24,7 +24,9 @@ module AccountCLIHelper
     loop do
       credentials = obtain_account_credentials
 
-      break setup_account(credentials[0]) if account_exists?(credentials)
+      next show('ACCOUNT.ERRORS.NO_ACCOUNT') unless AccountValidator.account_exists?(credentials)
+
+      break setup_account(credentials[0])
     end
   end
 
@@ -62,15 +64,5 @@ module AccountCLIHelper
 
   def setup_account(login)
     @current_account = accounts.detect { |account| login == account.login }
-  end
-
-  def account_exists?(credentials)
-    login, password = credentials
-
-    accounts.each do |account|
-      return true if account.login == login && account.password == obtain_hashsum(password)
-    end
-
-    show('ACCOUNT.ERRORS.NO_ACCOUNT')
   end
 end

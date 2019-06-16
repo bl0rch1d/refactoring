@@ -57,7 +57,7 @@ class AccountBuilder
 
   def set_login(login)
     AccountValidator.check_login(login, errors)
-    AccountValidator.check_uniqueness(accounts, login, errors)
+    AccountValidator.check_uniqueness(login, errors)
 
     return unless errors[:login].empty?
 

@@ -205,13 +205,9 @@ RSpec.describe Account do
           let(:error) { ACCOUNT_VALIDATION_PHRASES[:login][:exists][3..-1] }
 
           before do
-            # THINK ABOUT IT!!!!
-
-            # rubocop:disable RSpec/AnyInstance
-            allow_any_instance_of(AccountBuilder).to receive(:accounts) do
+            allow(AccountValidator).to receive(:accounts) do
               [instance_double('Account', login: error_input)]
             end
-            # rubocop:enable RSpec/AnyInstance
           end
 
           it { expect { console.create_account }.to output(/#{error}/).to_stdout }
@@ -277,9 +273,11 @@ RSpec.describe Account do
       let(:password) { 'johnny1' }
 
       before do
+        allow(console).to receive(:loop).and_yield
+
         allow(console).to receive_message_chain(:gets, :strip).and_return(*all_inputs)
 
-        allow(console).to receive(:accounts) do
+        allow(AccountValidator).to receive(:accounts) do
           [instance_double('Account', login: login, password: Digest::SHA512.hexdigest(password))]
         end
       end

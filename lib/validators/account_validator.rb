@@ -2,11 +2,13 @@
 
 class AccountValidator
   class << self
+    include DBHelper
+
     def check_name(value, errors)
       errors[:name] << I18n.t('ACCOUNT.ERRORS.BAD_NAME') unless value.match?(/\A[A-Z]/)
     end
 
-    def check_uniqueness(accounts, value, errors)
+    def check_uniqueness(value, errors)
       errors[:login] << I18n.t('ACCOUNT.ERRORS.ACCOUNT_EXISTS') if accounts.map(&:login).include? value
     end
 
@@ -34,6 +36,14 @@ class AccountValidator
       errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.SMALL') unless value >= 23
 
       errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.BIG') unless value <= 90
+    end
+
+    def account_exists?(credentials)
+      login, password = credentials
+
+      accounts.map do |account|
+        return true if account.login == login && account.password == obtain_hashsum(password)
+      end.pop
     end
   end
 end

@@ -61,4 +61,3 @@ en:
       NOT_ENOUGH_MONEY: "[!] You don't have enough money on card for such operation"
       HIGH_TAX: '[!] Your tax is higher than input amount'
       INCORRECT_AMOUNT: '[!] You must input correct amount of $'
-      
