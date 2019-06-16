@@ -7,12 +7,14 @@ require 'digest'
 
 require_relative '../config/app_config'
 
-require_relative 'helpers/db'
-require_relative 'helpers/account_cli'
-require_relative 'helpers/card_validator'
-require_relative 'helpers/account_validator'
-require_relative 'helpers/card_cli'
-require_relative 'helpers/operator_cli'
+require_relative 'validators/card_validator'
+require_relative 'validators/account_validator'
+require_relative 'validators/transaction_validator'
+
+require_relative 'helpers/db_helper'
+require_relative 'helpers/account_cli_helper'
+require_relative 'helpers/card_cli_helper'
+require_relative 'helpers/operator_cli_helper'
 
 require_relative 'banking_app/ui'
 require_relative 'banking_app/card'

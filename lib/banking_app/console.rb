@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Console
-  include ConsoleAppConfig
+  prepend ConsoleAppConfig
   prepend UI
   prepend DBHelper
   prepend AccountCLIHelper

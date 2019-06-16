@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DBHelper
-  include ConsoleAppConfig
+  prepend ConsoleAppConfig
 
   private
 

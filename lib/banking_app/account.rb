@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 class Account
-  prepend ConsoleAppConfig
-  prepend UI
   extend DBHelper
 
   attr_accessor :name, :age, :login, :password, :cards
 
   class << self
-    def add(account)
-      save accounts << account
+    def add(new_account)
+      save accounts << new_account
     end
 
     def update(account_to_update)

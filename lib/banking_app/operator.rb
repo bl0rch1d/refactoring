@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Operator
-  include UI
+  prepend UI
 
   TAXES = {
     usual: {
@@ -26,10 +26,10 @@ class Operator
     @account = account
   end
 
-  def withdraw_money(card, amount)
+  def withdraw(card, amount)
     tax = calculate_tax(card_type: card.type, operation: :withdraw, amount: amount)
 
-    return unless amount_valid?(card, amount, tax)
+    return show('OPERATOR.ERRORS.NOT_ENOUGH_MONEY') unless TransactionValidator.amount_valid?(card, amount, tax)
 
     perform_transaction(
       operation: :withdraw,
@@ -39,10 +39,10 @@ class Operator
     )
   end
 
-  def put_money(card, amount)
+  def put(card, amount)
     tax = calculate_tax(card_type: card.type, operation: :put, amount: amount)
 
-    return unless tax_valid?(amount, tax)
+    return show('OPERATOR.ERRORS.HIGH_TAX') unless TransactionValidator.tax_valid?(amount, tax)
 
     perform_transaction(
       operation: :put,
@@ -53,6 +53,12 @@ class Operator
   end
 
   private
+
+  def calculate_tax(card_type:, operation:, amount:)
+    return TAXES[card_type.intern][operation] if operation == :put && TAXES.keys[1..-1].include?(card_type.intern)
+
+    TAXES[card_type.intern][operation] * amount
+  end
 
   def perform_transaction(operation:, card:, amount:, tax:)
     operation == :put ? card.balance += (amount - tax) : card.balance -= (amount - tax)
@@ -66,23 +72,5 @@ class Operator
       card_balance: card.balance,
       tax: tax
     )
-  end
-
-  def calculate_tax(card_type:, operation:, amount:)
-    return TAXES[card_type.intern][operation] if operation == :put && TAXES.keys[1..-1].include?(card_type.intern)
-
-    TAXES[card_type.intern][operation] * amount
-  end
-
-  def amount_valid?(card, amount, tax)
-    return show('OPERATOR.ERRORS.NOT_ENOUGH_MONEY') if (card.balance - amount - tax).negative?
-
-    true
-  end
-
-  def tax_valid?(amount, tax)
-    return show('OPERATOR.ERRORS.HIGH_TAX') if tax > amount
-
-    true
   end
 end

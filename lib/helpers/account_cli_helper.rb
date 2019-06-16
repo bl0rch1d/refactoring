@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AccountCLIHelper
-  include ConsoleAppConfig
+  prepend ConsoleAppConfig
 
   def create_account
     loop do
@@ -45,16 +45,16 @@ module AccountCLIHelper
   private
 
   def input(credential)
-    show :"ACCOUNT.#{credential.upcase}_REQUEST"
+    show(:"ACCOUNT.#{credential.upcase}_REQUEST", with_invite: true)
 
     gets.strip
   end
 
   def obtain_account_credentials
-    show('ACCOUNT.LOGIN_REQUEST')
+    show('ACCOUNT.LOGIN_REQUEST', with_invite: true)
     login = gets.strip
 
-    show('ACCOUNT.PASSWORD_REQUEST')
+    show('ACCOUNT.PASSWORD_REQUEST', with_invite: true)
     password = gets.strip
 
     [login, password]
@@ -67,9 +67,9 @@ module AccountCLIHelper
   def account_exists?(credentials)
     login, password = credentials
 
-    return true if accounts.map do |account|
-      { login: account.login, password: account.password }
-    end.include?(login: login, password: obtain_hashsum(password))
+    accounts.each do |account|
+      return true if account.login == login && account.password == obtain_hashsum(password)
+    end
 
     show('ACCOUNT.ERRORS.NO_ACCOUNT')
   end
