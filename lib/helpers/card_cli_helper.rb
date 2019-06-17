@@ -17,7 +17,7 @@ module CardCLIHelper
 
       return if card_type == COMMANDS[:exit]
 
-      next warn_abount(:wrong_card_type) unless Card::TEMPLATES.include? card_type.intern
+      next warn_abount(:wrong_card_type) unless CardValidator.card_type_valid?(card_type)
 
       break Card.add(account: @current_account, type: card_type.intern)
     end

@@ -13,5 +13,9 @@ class CardValidator
     def card_number_valid?(value)
       value.size == Card::NUMBER_LENGTH
     end
+
+    def card_type_valid?(type)
+      Card::TEMPLATES.include? type.intern
+    end
   end
 end
