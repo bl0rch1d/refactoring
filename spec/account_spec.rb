@@ -273,11 +273,13 @@ RSpec.describe Account do
       let(:password) { 'johnny1' }
 
       before do
-        allow(console).to receive(:loop).and_yield
-
         allow(console).to receive_message_chain(:gets, :strip).and_return(*all_inputs)
 
         allow(AccountValidator).to receive(:accounts) do
+          [instance_double('Account', login: login, password: Digest::SHA512.hexdigest(password))]
+        end
+
+        allow(console).to receive(:accounts) do
           [instance_double('Account', login: login, password: Digest::SHA512.hexdigest(password))]
         end
       end
