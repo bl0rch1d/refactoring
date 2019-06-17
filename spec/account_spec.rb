@@ -82,12 +82,11 @@ RSpec.describe Account do
       end
 
       it 'returns an error if input is something else' do
-        allow(console).to receive(:exit)
         allow(STDOUT).to receive(:puts).with(anything)
 
         allow(console).to receive_message_chain(:gets, :strip, :downcase) { garbage }
 
-        expect(STDOUT).to receive(:puts).with(I18n.t('ACCOUNT.ERRORS.INVALID_OPTION'))
+        expect(console).to receive(:abort).with(I18n.t('ACCOUNT.ERRORS.INVALID_OPTION'))
       end
     end
 
@@ -264,6 +263,7 @@ RSpec.describe Account do
       it do
         expect(console).to receive(:accounts).and_return([])
         expect(console).to receive(:create_the_first_account).and_return([])
+
         console.load_account
       end
     end
@@ -846,6 +846,14 @@ RSpec.describe Account do
         builder.set_login_credentials('fakelogin', 'fakepassword')
         builder.set_empty_cards_list
       end
+    end
+
+    before do
+      stub_const('ConsoleAppConfig::ACCOUNTS_PATH', OVERRIDABLE_FILENAME)
+    end
+
+    after do
+      File.delete(OVERRIDABLE_FILENAME) if File.exist?(OVERRIDABLE_FILENAME)
     end
 
     context 'without cards' do

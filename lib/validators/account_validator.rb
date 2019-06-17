@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AccountValidator
+  TRUSTED_LOGIN_ATTEMPTS_COUNT = 3
+
   class << self
     include DBHelper
 
@@ -41,9 +43,9 @@ class AccountValidator
     def account_exists?(credentials)
       login, password = credentials
 
-      accounts.map do |account|
+      accounts.detect do |account|
         return true if account.login == login && account.password == obtain_hashsum(password)
-      end.pop
+      end
     end
   end
 end

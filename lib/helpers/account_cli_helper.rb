@@ -21,10 +21,15 @@ module AccountCLIHelper
   def load_account
     return create_the_first_account if accounts.none?
 
-    loop do
-      credentials = obtain_account_credentials
+    attempts = 0
 
-      next show('ACCOUNT.ERRORS.NO_ACCOUNT') unless AccountValidator.account_exists?(credentials)
+    loop do
+      abort(I18n.t('ACCOUNT.ERRORS.LOGIN_ATTEMPTS')) if attempts >= AccountValidator::TRUSTED_LOGIN_ATTEMPTS_COUNT
+
+      credentials = obtain_account_credentials
+      attempts += 1
+
+      next warn_abount :unknown_account unless AccountValidator.account_exists?(credentials)
 
       break setup_account(credentials[0])
     end

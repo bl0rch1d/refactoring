@@ -23,6 +23,7 @@ en:
             \n- destroy account             - press `DA`
             \n- exit from account           - press `exit`"
     ERRORS:
+      LOGIN_ATTEMPTS: '[!] 3 incorrect login attempts.'
       INVALID_OPTION: '[!] Invalid option.'
       NO_ACCOUNT: '[!] There is no account with given credentials!'
       BAD_NAME: '[!] Your name must not be empty and starts with upcase letter'

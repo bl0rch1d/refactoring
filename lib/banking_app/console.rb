@@ -20,7 +20,7 @@ class Console
     when COMMANDS[:create] then create_account
     when COMMANDS[:load]   then load_account
     when COMMANDS[:exit]   then exit
-    else return show('ACCOUNT.ERRORS.INVALID_OPTION')
+    else abort(I18n.t('ACCOUNT.ERRORS.INVALID_OPTION'))
     end
 
     initialize_operator

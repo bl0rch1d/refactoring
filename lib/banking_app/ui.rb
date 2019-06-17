@@ -44,6 +44,7 @@ module UI
     case error_type
     when :wrong_card_type then show('CARD.ERRORS.WRONG_TYPE')
     when :wrong_command   then show('WRONG_COMMAND')
+    when :unknown_account then show('ACCOUNT.ERRORS.NO_ACCOUNT')
     end
   end
 
