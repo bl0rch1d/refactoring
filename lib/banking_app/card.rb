@@ -4,6 +4,8 @@ class Card
   attr_reader :type, :number
   attr_accessor :balance
 
+  NUMBER_LENGTH = 16
+
   TEMPLATES = {
     usual: {
       type: 'usual',
@@ -24,7 +26,7 @@ class Card
   def initialize(type:, balance:)
     @type = type
     @balance = balance
-    @number = Array.new(16) { rand(10) }.join
+    @number = Array.new(NUMBER_LENGTH) { rand(10) }.join
   end
 
   class << self

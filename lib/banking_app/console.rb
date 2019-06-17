@@ -38,6 +38,7 @@ class Console
       when COMMANDS[:destroy_card]    then destroy_card
       when COMMANDS[:put_money]       then put_money
       when COMMANDS[:withdraw_money]  then withdraw_money
+      when COMMANDS[:send_money]      then send_money
       when COMMANDS[:destroy_account] then return destroy_account
       when COMMANDS[:exit]            then exit
       else warn_abount :wrong_command

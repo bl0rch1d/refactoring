@@ -42,3 +42,4 @@ Here is some requirements/rules for refactoring:
 ### Money
 - put
 - withdraw
+- send

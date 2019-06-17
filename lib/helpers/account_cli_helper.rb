@@ -44,9 +44,7 @@ module AccountCLIHelper
   def create_the_first_account
     show('ACCOUNT.FIRST_REQUEST', with_invite: true)
 
-    return create_account if confirmed?
-
-    run
+    confirmed? ? create_account : run
   end
 
   private

@@ -50,11 +50,14 @@ en:
             \n- Capitalist card. 10$ tax on card INCOME. 10% tax on SENDING money from this card. 4$ tax on WITHDRAWING money. For creation this card - press `capitalist`
             \n- Virtual card. 1$ tax on card INCOME. 1$ tax on SENDING money from this card. 12% tax on WITHDRAWING money. For creation this card - press `virtual`\n"
     ERRORS:
+      NO_SUCH_CARD: "[!] There is no card with number %{card_number}\n"
+      CARD_NUMBER: '[!] Incorrect card number.'
       NO_CARDS_AVAILABLE: "[!] There is no active cards!\n"
       WRONG_INDEX: "[!] You entered wrong index!\n"
       WRONG_TYPE: "Wrong card type. Try again!\n"
 
   OPERATOR:
+    RECIPIENT_CARD_NUMBER_REQUEST: 'Enter the recipient card number'
     AMOUNT_REQUEST: "Input the amount of money you want to %{operation}"
     WITHDRAW:  "\n%{amount}$ withdrawed from %{card_number}. Money left: %{card_balance}$. Tax: %{tax}$"
     PUT:  "\n%{amount}$ was put on %{card_number}. Balance: %{card_balance}$. Tax: %{tax}$"

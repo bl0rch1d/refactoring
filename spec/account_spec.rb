@@ -351,6 +351,7 @@ RSpec.describe Account do
         'DC' => :destroy_card,
         'PM' => :put_money,
         'WM' => :withdraw_money,
+        'SM' => :send_money,
         'DA' => :destroy_account,
         'exit' => :exit
       }

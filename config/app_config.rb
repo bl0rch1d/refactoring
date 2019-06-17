@@ -13,6 +13,7 @@ module ConsoleAppConfig
     destroy_card: 'DC',
     put_money: 'PM',
     withdraw_money: 'WM',
+    send_money: 'SM',
     destroy_account: 'DA'
   }.freeze
 end
