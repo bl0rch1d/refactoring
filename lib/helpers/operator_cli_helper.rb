@@ -8,7 +8,7 @@ module OperatorCLIHelper
 
     amount = obtain_amount(operation: :withdraw)
 
-    return if amount.nil?
+    return unless amount
 
     @operator.withdraw(@current_account.cards[choosen_card_index], amount)
   end
@@ -20,7 +20,7 @@ module OperatorCLIHelper
 
     amount = obtain_amount(operation: :put)
 
-    return if amount.nil?
+    return unless amount
 
     @operator.put(@current_account.cards[choosen_card_index], amount)
   end
@@ -32,11 +32,11 @@ module OperatorCLIHelper
 
     recipient_data = obtain_recipient_data
 
-    return if recipient_data.nil?
+    return unless recipient_data
 
     amount = obtain_amount(operation: :send)
 
-    return if amount.nil?
+    return unless amount
 
     @operator.send(@current_account.cards[choosen_card_index], recipient_data, amount)
   end
@@ -56,12 +56,12 @@ module OperatorCLIHelper
   def obtain_recipient_data
     card_number = obtain_recipient_card_number
 
-    account = accounts.detect { |x| x.cards.map(&:number).include? card_number }
+    recipient_account = accounts.detect { |account| account.cards.map(&:number).include? card_number }
 
-    return show('CARD.ERRORS.NO_SUCH_CARD', card_number: card_number) if account.nil?
+    return show('CARD.ERRORS.NO_SUCH_CARD', card_number: card_number) unless recipient_account
 
     {
-      account: account,
+      account: recipient_account,
       card_number: card_number
     }
   end

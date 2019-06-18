@@ -12,7 +12,7 @@ module AccountCLIHelper
         builder.set_empty_cards_list
       end
 
-      next if account.nil?
+      next unless account
 
       break Account.add @current_account = account
     end

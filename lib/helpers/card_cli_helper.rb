@@ -19,7 +19,7 @@ module CardCLIHelper
 
       next warn_abount(:wrong_card_type) unless CardValidator.card_type_valid?(card_type)
 
-      break Card.add(account: @current_account, type: card_type.intern)
+      break Cards::Base.add(account: @current_account, type: card_type.intern)
     end
 
     Account.update(@current_account)
@@ -38,7 +38,7 @@ module CardCLIHelper
 
     return unless confirmed?
 
-    Card.destroy(@current_account, choosen_card_index)
+    Cards::Base.destroy(@current_account, choosen_card_index)
 
     Account.update(@current_account)
   end

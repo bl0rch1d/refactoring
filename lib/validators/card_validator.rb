@@ -11,11 +11,11 @@ class CardValidator
     end
 
     def card_number_valid?(value)
-      value.size == Card::NUMBER_LENGTH
+      value.size == Cards::Base::NUMBER_LENGTH
     end
 
     def card_type_valid?(type)
-      Card::TEMPLATES.include? type.intern
+      Cards.constants.include? type.intern.capitalize
     end
   end
 end

@@ -17,6 +17,6 @@ module DBHelper
     return [] unless File.exist?(ACCOUNTS_PATH)
 
     yaml = File.read(ACCOUNTS_PATH)
-    Psych.safe_load(yaml, [Symbol, Account, Card])
+    Psych.safe_load(yaml, [Symbol, Account, Cards::Usual, Cards::Capitalist, Cards::Virtual])
   end
 end

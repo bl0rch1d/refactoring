@@ -3,28 +3,6 @@
 class Operator
   prepend UI
 
-  TAXES = {
-    usual: {
-      withdraw: 0.05,
-      put: 0.02,
-      send: 20
-    },
-
-    capitalist: {
-      withdraw: 0.04,
-      put: 10,
-      send: 0.1
-    },
-
-    virtual: {
-      withdraw: 0.88,
-      put: 1,
-      send: 1
-    }
-  }.freeze
-
-  private_constant :TAXES
-
   def initialize(account)
     @account             = account
     @recipient_account   = nil
@@ -32,7 +10,7 @@ class Operator
   end
 
   def withdraw(card, amount, send_context: false)
-    tax = calculate_tax(card_type: card.type, operation: (send_context ? :send : :withdraw), amount: amount)
+    tax = calculate_tax(card: card, operation: (send_context ? :send : :withdraw), amount: amount)
 
     return show('OPERATOR.ERRORS.NOT_ENOUGH_MONEY') unless TransactionValidator.amount_valid?(card, amount, tax)
 
@@ -45,7 +23,7 @@ class Operator
   end
 
   def put(card, amount)
-    tax = calculate_tax(card_type: card.type, operation: :put, amount: amount)
+    tax = calculate_tax(card: card, operation: :put, amount: amount)
 
     return show('OPERATOR.ERRORS.HIGH_TAX') unless TransactionValidator.tax_valid?(amount, tax)
 
@@ -73,13 +51,14 @@ class Operator
 
   private
 
-  def calculate_tax(card_type:, operation:, amount:)
-    tax_factor = TAXES[card_type.intern][operation]
+  def calculate_tax(card:, operation:, amount:)
+    tax_factor = card.taxes[operation]
+    card_type = card.class.to_s.split('::')[1]
 
     case operation
     when :withdraw then tax_factor * amount
-    when :put      then card_type.intern == TAXES.keys[0] ? tax_factor * amount : tax_factor
-    when :send     then card_type.intern == TAXES.keys[1] ? tax_factor * amount : tax_factor
+    when :put      then card_type == 'Usual' ? tax_factor * amount : tax_factor
+    when :send     then card_type == 'Capitalist' ? tax_factor * amount : tax_factor
     end
   end
 

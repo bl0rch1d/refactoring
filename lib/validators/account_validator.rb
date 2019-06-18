@@ -47,5 +47,24 @@ class AccountValidator
         return true if account.login == login && account.password == obtain_hashsum(password)
       end
     end
+
+    # ------- In progress -------
+    # private
+
+    # def validate_length_range(value:, field:, range:)
+    #   return I18n.t("ACCOUNT.ERRORS.#{field.upcase}.LONG") if value.length > range.max
+
+    #   I18n.t("ACCOUNT.ERRORS.#{field.upcase}.SHORT") if value.length < range.min
+    # end
+
+    # def validate_emptyness(value:, field:)
+    #   I18n.t("ACCOUNT.ERRORS.#{field.upcase}.EMPTY") if value.empty?
+    # end
+
+    # def validate_integer(value); end
+
+    # def validate_integer_range(integer); end
+
+    # def validate_account_uniqueness(login); end
   end
 end

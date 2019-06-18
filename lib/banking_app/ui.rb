@@ -18,7 +18,7 @@ module UI
   def show_active_cards(account)
     show('CARD.AVAILABLE')
 
-    account.cards.each_with_index { |card, i| puts "#{card.number}, #{card.type}, # - #{i + 1}" }
+    account.cards.each_with_index { |card, i| puts "#{card.number}, #{card.class.to_s.split('::')[1]}, # - #{i + 1}" }
   end
 
   def show_cards_creation_menu
