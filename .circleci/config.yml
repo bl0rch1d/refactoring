@@ -26,11 +26,5 @@ jobs:
             - vendor/bundle
 
       - run:
-          name: Check with linters
-          command: |
-            bundle exec rubocop
-            bundle exec fasterer
-
-      - run:
           name: Run tests
           command: bundle exec rspec
