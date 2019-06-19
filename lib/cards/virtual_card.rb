@@ -6,12 +6,18 @@ module Cards
       super
 
       @balance = balance
+    end
 
-      @taxes = {
-        withdraw: 0.88,
-        put: 1,
-        send: 1
-      }
+    def withdraw_tax(amount)
+      amount * 0.88
+    end
+
+    def put_tax(_amount)
+      1
+    end
+
+    def send_tax(_amount)
+      1
     end
   end
 end

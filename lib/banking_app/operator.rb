@@ -4,9 +4,9 @@ class Operator
   prepend UI
 
   def initialize(account)
-    @account             = account
-    @recipient_account   = nil
-    @transaction_success = false
+    @account                  = account
+    @recipient_account        = nil
+    @send_transaction_status  = nil
   end
 
   def withdraw(card, amount, send_context: false)
@@ -20,6 +20,8 @@ class Operator
       amount: amount,
       tax: tax
     )
+
+    @send_transaction_status = :pending if send_context
   end
 
   def put(card, amount)
@@ -40,7 +42,7 @@ class Operator
 
     withdraw(sender_card, amount, send_context: true)
 
-    return unless @transaction_success
+    return if @send_transaction_status != :pending
 
     @recipient_account = recipient_data[:account]
 
@@ -52,13 +54,10 @@ class Operator
   private
 
   def calculate_tax(card:, operation:, amount:)
-    tax_factor = card.taxes[operation]
-    card_type = card.class.to_s.split('::')[1]
-
     case operation
-    when :withdraw then tax_factor * amount
-    when :put      then card_type == 'Usual' ? tax_factor * amount : tax_factor
-    when :send     then card_type == 'Capitalist' ? tax_factor * amount : tax_factor
+    when :withdraw then card.withdraw_tax(amount)
+    when :put      then card.put_tax(amount)
+    when :send     then card.send_tax(amount)
     end
   end
 
@@ -66,8 +65,6 @@ class Operator
     operation == :put ? card.balance += (amount - tax) : card.balance -= (amount + tax)
 
     Account.update @recipient_account || @account
-
-    @transaction_success = true
 
     show(
       "OPERATOR.#{operation.upcase}",
