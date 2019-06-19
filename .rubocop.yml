@@ -35,5 +35,6 @@ Documentation:
 AllCops:
   Exclude:
     - 'bin/'
+    - 'vendor/'
     - '*.gemspec'
   TargetRubyVersion: 2.6.3
