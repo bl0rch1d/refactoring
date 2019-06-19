@@ -4,40 +4,35 @@ class AccountValidator
   TRUSTED_LOGIN_ATTEMPTS_COUNT = 3
 
   class << self
+    include ValidationHelper
     include DBHelper
 
-    def check_name(value, errors)
-      errors[:name] << I18n.t('ACCOUNT.ERRORS.BAD_NAME') unless value.match?(/\A[A-Z]/)
+    def check_name(value)
+      [validate_capitalized_string(value: value, field: :name)].compact
     end
 
-    def check_uniqueness(value, errors)
-      errors[:login] << I18n.t('ACCOUNT.ERRORS.ACCOUNT_EXISTS') if accounts.map(&:login).include? value
+    def check_login(value)
+      [
+        validate_length_range(value: value, field: :login, range: LOGIN_LENGTH_RANGE),
+        validate_emptyness(value: value, field: :login),
+        validate_account_uniqueness(value)
+      ].compact
     end
 
-    def check_login(value, errors)
-      errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.EMPTY') if value.empty?
-
-      errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.SHORT') if value.length < 4
-
-      errors[:login] << I18n.t('ACCOUNT.ERRORS.LOGIN.LONG') if value.length > 20
+    def check_password(value)
+      [
+        validate_length_range(value: value, field: :password, range: PASSWORD_LENGTH_RANGE),
+        validate_emptyness(value: value, field: :password)
+      ].compact
     end
 
-    def check_password(value, errors)
-      errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.EMPTY') if value.empty?
-
-      errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.SHORT') if value.length < 6
-
-      errors[:password] << I18n.t('ACCOUNT.ERRORS.PASSWORD.LONG') if value.length > 30
-    end
-
-    def check_age(value, errors)
+    def check_age(value)
       value = value.to_i
 
-      errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.NOT_A_NUMBER') unless value.is_a? Integer
-
-      errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.SMALL') unless value >= 23
-
-      errors[:age] << I18n.t('ACCOUNT.ERRORS.AGE.BIG') unless value <= 90
+      [
+        validate_integer(value: value, field: :age),
+        validate_integer_range(value: value, field: :age, range: AGE_RANGE)
+      ].compact
     end
 
     def account_exists?(credentials)
@@ -47,24 +42,5 @@ class AccountValidator
         return true if account.login == login && account.password == obtain_hashsum(password)
       end
     end
-
-    # ------- In progress -------
-    # private
-
-    # def validate_length_range(value:, field:, range:)
-    #   return I18n.t("ACCOUNT.ERRORS.#{field.upcase}.LONG") if value.length > range.max
-
-    #   I18n.t("ACCOUNT.ERRORS.#{field.upcase}.SHORT") if value.length < range.min
-    # end
-
-    # def validate_emptyness(value:, field:)
-    #   I18n.t("ACCOUNT.ERRORS.#{field.upcase}.EMPTY") if value.empty?
-    # end
-
-    # def validate_integer(value); end
-
-    # def validate_integer_range(integer); end
-
-    # def validate_account_uniqueness(login); end
   end
 end

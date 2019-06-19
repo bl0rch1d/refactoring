@@ -21,15 +21,15 @@ class AccountBuilder
     @account = Account.new
 
     @errors = {
-      name: [],
-      age: [],
-      login: [],
-      password: []
+      name: nil,
+      age: nil,
+      login: nil,
+      password: nil
     }
   end
 
   def set_name(name)
-    AccountValidator.check_name(name, errors)
+    errors[:name] = AccountValidator.check_name(name)
 
     return unless errors[:name].empty?
 
@@ -37,7 +37,7 @@ class AccountBuilder
   end
 
   def set_age(age)
-    AccountValidator.check_age(age, errors)
+    errors[:age] = AccountValidator.check_age(age)
 
     return unless errors[:age].empty?
 
@@ -56,8 +56,7 @@ class AccountBuilder
   private
 
   def set_login(login)
-    AccountValidator.check_login(login, errors)
-    AccountValidator.check_uniqueness(login, errors)
+    errors[:login] = AccountValidator.check_login(login)
 
     return unless errors[:login].empty?
 
@@ -65,7 +64,7 @@ class AccountBuilder
   end
 
   def set_password(password)
-    AccountValidator.check_password(password, errors)
+    errors[:password] = AccountValidator.check_password(password)
 
     return unless errors[:password].empty?
 

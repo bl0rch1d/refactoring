@@ -11,6 +11,7 @@ require_relative 'helpers/db_helper'
 require_relative 'helpers/account_cli_helper'
 require_relative 'helpers/card_cli_helper'
 require_relative 'helpers/operator_cli_helper'
+require_relative 'helpers/validation_helper'
 
 require_relative 'validators/card_validator'
 require_relative 'validators/account_validator'
