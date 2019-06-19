@@ -3,6 +3,8 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.6.3
+
+    working_directory: ~/repo
     
     steps:
       - checkout
