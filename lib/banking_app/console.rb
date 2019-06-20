@@ -6,8 +6,9 @@ class Console
   prepend DBHelper
 
   def initialize
-    @current_account    = nil
-    @recipient_account  = nil
+    @current_account          = nil
+    @recipient_account        = nil
+    @send_transaction_status  = nil
   end
 
   def run
