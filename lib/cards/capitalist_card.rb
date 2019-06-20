@@ -8,17 +8,30 @@ module Cards
       @balance = balance
     end
 
-    # --- Variant 2 ---
     def withdraw_tax(amount)
-      amount * 0.04
+      calculate_tax(amount, withdraw_percent, withdraw_fixed)
     end
 
-    def put_tax(_amount)
-      10
+    def put_tax(amount)
+      calculate_tax(amount, put_percent, put_fixed)
     end
 
     def send_tax(amount)
-      amount * 0.1
+      calculate_tax(amount, send_percent, send_fixed)
+    end
+
+    private
+
+    def withdraw_percent
+      4
+    end
+
+    def put_fixed
+      10
+    end
+
+    def send_percent
+      10
     end
   end
 end

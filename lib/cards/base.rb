@@ -7,20 +7,42 @@ module Cards
     attr_accessor :balance
     attr_reader :number, :taxes
 
+    def self.generate_number
+      Array.new(NUMBER_LENGTH) { rand(10) }.join
+    end
+
     def initialize(_balance)
       @number = self.class.generate_number
     end
 
-    def self.add(account:, type:)
-      account.cards <<= Cards.const_get(type.capitalize).new
+    private
+
+    def calculate_tax(amount, percent_tax, fixed_tax)
+      (amount / 100) * percent_tax + fixed_tax
     end
 
-    def self.destroy(account, card_index)
-      account.cards.delete_at(card_index)
+    def put_fixed
+      0
     end
 
-    def self.generate_number
-      Array.new(NUMBER_LENGTH) { rand(10) }.join
+    def put_percent
+      0
+    end
+
+    def withdraw_fixed
+      0
+    end
+
+    def withdraw_percent
+      0
+    end
+
+    def send_fixed
+      0
+    end
+
+    def send_percent
+      0
     end
   end
 end

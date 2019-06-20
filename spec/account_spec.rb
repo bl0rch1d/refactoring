@@ -773,7 +773,7 @@ RSpec.describe Account do
         before do
           fake_account.instance_variable_set(:@cards, fake_cards)
           console.instance_variable_set(:@current_account, fake_account)
-          console.instance_variable_set(:@operator, Operator.new(fake_account))
+          # console.instance_variable_set(:@operator, Operator.new(fake_account))
 
           allow(console).to receive(:gets).and_return(*commands)
         end
@@ -813,7 +813,7 @@ RSpec.describe Account do
               ]
             end
 
-            let(:taxes) { [(correct_money_amount_greater_than_tax.to_i * 0.02), 10, 1] }
+            let(:taxes) { [(correct_money_amount_greater_than_tax.to_f * 0.02), 10, 1] }
             let(:commands) { [chosen_card_number, correct_money_amount_greater_than_tax] }
 
             before do
@@ -831,11 +831,11 @@ RSpec.describe Account do
                 allow(console).to receive(:gets).and_return(*commands)
                 fake_account.instance_variable_set(:@cards, [custom_card, card_one, card_two])
 
-                new_balance = default_balance + (correct_money_amount_greater_than_tax.to_i - taxes[index])
+                new_balance = default_balance + (correct_money_amount_greater_than_tax.to_f - taxes[index])
 
                 # rubocop:disable Metrics/LineLength
                 expect { console.put_money }.to output(
-                  /#{correct_money_amount_greater_than_tax}\$ was put on #{custom_card.number}. Balance: #{new_balance}\$. Tax: #{taxes[index]}\$/
+                  /#{correct_money_amount_greater_than_tax.to_f}\$ was put on #{custom_card.number}. Balance: #{new_balance}\$. Tax: #{taxes[index].to_f}\$/
                 ).to_stdout
                 # rubocop:enable Metrics/LineLength
 
@@ -943,7 +943,7 @@ RSpec.describe Account do
         before do
           console.instance_variable_set(:@current_account, fake_account)
           fake_account.instance_variable_set(:@cards, [card])
-          console.instance_variable_set(:@operator, Operator.new(fake_account))
+          # console.instance_variable_set(:@operator, Operator.new(fake_account))
 
           allow(console).to receive(:gets).and_return(
             chosen_card_number,
