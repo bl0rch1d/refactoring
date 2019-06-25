@@ -773,7 +773,6 @@ RSpec.describe Account do
         before do
           fake_account.instance_variable_set(:@cards, fake_cards)
           console.instance_variable_set(:@current_account, fake_account)
-          # console.instance_variable_set(:@operator, Operator.new(fake_account))
 
           allow(console).to receive(:gets).and_return(*commands)
         end
@@ -943,7 +942,6 @@ RSpec.describe Account do
         before do
           console.instance_variable_set(:@current_account, fake_account)
           fake_account.instance_variable_set(:@cards, [card])
-          # console.instance_variable_set(:@operator, Operator.new(fake_account))
 
           allow(console).to receive(:gets).and_return(
             chosen_card_number,

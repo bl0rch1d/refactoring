@@ -137,7 +137,7 @@ class Console
 
     return unless amount
 
-    withdraw(@current_account.cards[choosen_card_index], amount)
+    Cards::Base.withdraw_money(@current_account, @current_account.cards[choosen_card_index], amount)
   end
 
   def put_money
@@ -149,7 +149,7 @@ class Console
 
     return unless amount
 
-    put(@current_account.cards[choosen_card_index], amount)
+    Cards::Base.put_money(@current_account, @current_account.cards[choosen_card_index], amount)
   end
 
   def send_money
@@ -165,69 +165,13 @@ class Console
 
     return unless amount
 
-    send(@current_account.cards[choosen_card_index], recipient_data, amount)
+    Cards::Base.send_money(@current_account, @current_account.cards[choosen_card_index], recipient_data, amount)
   end
 
   private
 
-  def withdraw(card, amount, send_context: false)
-    tax = send_context ? card.send_tax(amount) : card.withdraw_tax(amount)
-
-    return show('OPERATOR.ERRORS.NOT_ENOUGH_MONEY') unless TransactionValidator.amount_valid?(card, amount, tax)
-
-    perform_transaction(
-      operation: :withdraw,
-      card: card,
-      amount: amount,
-      tax: tax
-    )
-
-    @send_transaction_status = :pending if send_context
-  end
-
-  def put(card, amount)
-    tax = card.put_tax(amount)
-
-    return show('OPERATOR.ERRORS.HIGH_TAX') unless TransactionValidator.tax_valid?(amount, tax)
-
-    perform_transaction(
-      operation: :put,
-      card: card,
-      amount: amount,
-      tax: tax
-    )
-  end
-
-  def send(sender_card, recipient_data, amount)
-    recipient_card = recipient_data[:account].cards.detect { |card| card.number == recipient_data[:card_number] }
-
-    withdraw(sender_card, amount, send_context: true)
-
-    return if @send_transaction_status != :pending
-
-    @recipient_account = recipient_data[:account]
-
-    put(recipient_card, amount)
-
-    @recipient_account = nil
-  end
-
   def confirmed?
     gets.strip.downcase == COMMANDS[:yes]
-  end
-
-  def perform_transaction(operation:, card:, amount:, tax:)
-    operation == :put ? card.balance += (amount - tax) : card.balance -= (amount + tax)
-
-    Account.update @recipient_account || @current_account
-
-    show(
-      "OPERATOR.#{operation.upcase}",
-      amount: amount,
-      card_number: card.number,
-      card_balance: card.balance,
-      tax: tax
-    )
   end
 
   def input(credential)
