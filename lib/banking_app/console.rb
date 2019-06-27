@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 class Console
   prepend ConsoleAppConfig
   prepend UI
@@ -137,7 +138,7 @@ class Console
 
     return unless amount
 
-    Cards::Base.withdraw_money(@current_account, @current_account.cards[choosen_card_index], amount)
+    withdraw(@current_account, @current_account.cards[choosen_card_index], amount)
   end
 
   def put_money
@@ -149,7 +150,7 @@ class Console
 
     return unless amount
 
-    Cards::Base.put_money(@current_account, @current_account.cards[choosen_card_index], amount)
+    put(@current_account, @current_account.cards[choosen_card_index], amount)
   end
 
   def send_money
@@ -165,10 +166,42 @@ class Console
 
     return unless amount
 
-    Cards::Base.send_money(@current_account, @current_account.cards[choosen_card_index], recipient_data, amount)
+    send(@current_account, @current_account.cards[choosen_card_index], recipient_data, amount)
   end
 
   private
+
+  def withdraw(account, card, amount, send_context: false)
+    tax = send_context ? card.send_tax(amount) : card.withdraw_tax(amount)
+
+    return show('OPERATOR.ERRORS.NOT_ENOUGH_MONEY') unless TransactionValidator.amount_valid?(card, amount, tax)
+
+    Cards::Base.update_balance(card, amount, tax, operation: :withdraw)
+
+    Account.update account
+
+    show('OPERATOR.WITHDRAW', amount: amount, card_number: card.number, card_balance: card.balance, tax: tax)
+  end
+
+  def put(account, card, amount)
+    tax = card.put_tax(amount)
+
+    return show('OPERATOR.ERRORS.HIGH_TAX') unless TransactionValidator.tax_valid?(amount, tax)
+
+    Cards::Base.update_balance(card, amount, tax, operation: :put)
+
+    Account.update account
+
+    show('OPERATOR.PUT', amount: amount, card_number: card.number, card_balance: card.balance, tax: tax)
+  end
+
+  def send(sender_account, sender_card, recipient_data, amount)
+    recipient_card = recipient_data[:account].cards.detect { |card| card.number == recipient_data[:card_number] }
+
+    withdraw(sender_account, sender_card, amount, send_context: true)
+
+    put(recipient_data[:account], recipient_card, amount)
+  end
 
   def confirmed?
     gets.strip.downcase == COMMANDS[:yes]
@@ -247,3 +280,4 @@ class Console
     card_index
   end
 end
+# rubocop:enable Metrics/ClassLength
