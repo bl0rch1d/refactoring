@@ -1,5 +1,10 @@
 .history
 accounts.yml
 spec/fixtures/account.yml
-coverage
+/coverage/
 .DS_Store
+
+/.vscode/
+
+*.swp
+*.yml
